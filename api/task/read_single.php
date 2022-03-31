@@ -4,9 +4,9 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-include_once '../models/Task.php';
-include_once '../models/Tag.php';
-include_once '../config/Database.php';
+include_once 'api/models/Task.php';
+include_once 'api/models/Tag.php';
+include_once 'api/config/Database.php';
 
 $db = new Database();
 $database = $db->connectToDB();
@@ -14,48 +14,29 @@ $database = $db->connectToDB();
 $task = new Task($database);
 $tag = new Tag($database);
 
-//Get the id
-if($task->id = isset($_GET['id'])){
-    $task->id = $_GET['id'];
-}else{
-    die();
+$task->id = $id;
+$resultTask = $task->read_single();
+
+$numTask = $resultTask->rowCount();
+if ($numTask > 0) {
+    $taskArr = array();
+    $taskArr['tasks'] = array();
+    while ($rows = $resultTask->fetch(PDO::FETCH_ASSOC)) {
+        extract($rows);
+
+        if (!array_key_exists($Task, $taskArr['tasks'])) {
+            $taskArr['tasks'][$Task] = array();
+        }
+
+        if (!array_key_exists('tags', $taskArr['tasks'][$Task])) {
+            $taskArr['tasks'][$Task]['tags'] = array();
+        }
+        array_push($taskArr['tasks'][$Task]['tags'], $Tag);
+
+        if (!array_key_exists('colors', $taskArr['tasks'][$Task])) {
+            $taskArr['tasks'][$Task]['colors'] = array();
+        }
+        array_push($taskArr['tasks'][$Task]['colors'], $Color);
+    }
 }
-
-$task->read_single();
-
-$taskArr = array(
-    'id'=>$task->id,
-    'name'=> $task->name,
-    'id'=>$tag->id,
-    'name'=>$tag->name,
-    'color'=>$tag->color
-);
-
 print_r(json_encode($taskArr));
-
-/*
- * <?php
-//Headers
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-
-include_once 'api/models/Tag.php';
-include_once 'api/config/Database.php';
-
-$db = new Database();
-$database = $db->connectToDB();
-
-$tag = new Tag($database);
-
-$tag->id = $id;
-
-$tag->read_single();
-
-$tagArr = array(
-    'id'=>$tag->id,
-    'name'=> $tag->name,
-    'color'=>$tag->color
-);
-
-print_r(json_encode($tagArr));
- */

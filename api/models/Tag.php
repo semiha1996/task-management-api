@@ -22,7 +22,7 @@ class Tag {
     //Get all tags 
     public function read() {
         //Create query
-        $query = 'SELECT *  FROM ' . $this->dbTable;
+        $query = "SELECT *  FROM " . $this->dbTable;
 
         $stmt = $this->connection->prepare($query);
 
@@ -34,7 +34,7 @@ class Tag {
     //Get tag by id 
     public function read_single() {
         //Create query        
-        $query = 'SELECT * FROM ' . $this->dbTable . ' WHERE id = ? LIMIT 0,1';
+        $query = "SELECT * FROM " . $this->dbTable . " WHERE id = ? LIMIT 0,1";
 
         $stmt = $this->connection->prepare($query);
 
@@ -47,6 +47,7 @@ class Tag {
         $this->name = $row['name'];
         $this->color = $row['color'];
     }
+
 //create new tag(s)
     public function create($row) {
         $query = "INSERT INTO " . $this->dbTable . " SET  name = ?, color = ?";
@@ -55,11 +56,11 @@ class Tag {
         //Clean data
         $this->name = htmlspecialchars(strip_tags($row->name));
         $this->color = htmlspecialchars(strip_tags($row->color));
-        
+
         //Bind data
-        $stmt->bindParam(1,$this->name);
-        $stmt->bindParam(2,$this->color);
-        
+        $stmt->bindParam(1, $this->name);
+        $stmt->bindParam(2, $this->color);
+
         if ($stmt->execute()) {
             return true;
         } else {
@@ -67,6 +68,7 @@ class Tag {
             return false;
         }
     }
+
     //update  tag(s)
     public function update($row) {
         //Create query
@@ -74,36 +76,33 @@ class Tag {
                 . "WHERE ID=?";
         $stmt = $this->connection->prepare($query);
 
-
         //Clean data
         $this->id = $row->id;
         $this->name = htmlspecialchars(strip_tags($row->name));
         $this->color = htmlspecialchars(strip_tags($row->color));
 
-        
         //Bind data
         $stmt->bindParam(1, $this->name);
         $stmt->bindParam(2, $this->color);
-        $stmt->bindParam(3, $this->id );
-        
+        $stmt->bindParam(3, $this->id);
+
         if ($stmt->execute()) {
             return true;
         } else {
             printf("Error: %s\n", $stmt->error);
             return false;
         }
-       
     }
 
     //delete tag(s)
     public function delete($row) {
-        $query = 'DELETE FROM ' . $this->dbTable. ' WHERE id = ?';
-        $stmt=$this->connection->prepare($query);
-        
+        $query = "DELETE FROM " . $this->dbTable . " WHERE id = ?";
+        $stmt = $this->connection->prepare($query);
+
         $this->id = $row->id;
-        
+
         $stmt->bindParam(1, $this->id);
-        
+
         if ($stmt->execute()) {
             return true;
         } else {
@@ -111,4 +110,5 @@ class Tag {
             return false;
         }
     }
+
 }
