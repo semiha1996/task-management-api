@@ -94,15 +94,15 @@ class Task {
                 $stmt->bindValue(1, $insertedId);
                 $stmt->bindValue(2, $id);
                 
-                
+               
                 if (!$stmt->execute()) {
                     printf("Error: %s\n", $stmt->error);
                     return false;
                 }
             }
         }
-
         return true;
+         
     }
 
     //Update a task with particular id
