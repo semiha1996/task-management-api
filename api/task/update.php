@@ -11,12 +11,14 @@ include_once 'api/models/Task.php';
 include_once 'api/models/Tag.php';
 include_once 'api/config/Database.php';
 
+//Connect to the DB
 $db = new Database();
 $database = $db->connectToDB();
 
 $task = new Task($database);
 $tag = new Tag($database);
 
+//Decode the input
 $data = json_decode(file_get_contents("php://input"));
 
 foreach ($data->tasks as $row) {

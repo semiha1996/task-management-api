@@ -7,10 +7,11 @@
  */
 class Task {
 
-    //for connecting the DB
+    //For connecting the DB
     private $connection;
     private $dbTable = 'tasks';
-    //properties
+    
+    //Properties
     public int $id;
     public string $name;
 
@@ -20,7 +21,7 @@ class Task {
 
     //Get all tasks with their tags
     public function read() {
-        //Create query
+        //Query to read all tasks with their tags
         $query = "SELECT tasks.name AS Task, tags.name AS Tag, tags.color AS Color FROM " .
                 $this->dbTable
                 . " LEFT JOIN task_tag ON task_tag.task_id = tasks.id "
@@ -36,7 +37,7 @@ class Task {
 
     //Get one task with its tags
     public function read_single() {
-        //Create query
+        //Query to read a single task with the assigned tags
         $query = "SELECT tasks.name AS Task, tags.name AS Tag, tags.color AS Color FROM " .
                 $this->dbTable
                 . " LEFT JOIN task_tag ON task_tag.task_id = tasks.id "
@@ -55,6 +56,7 @@ class Task {
 
     //Create new task(s)
     public function create($row) {
+        // Insert task query 
         $queryTask = "INSERT INTO " . $this->dbTable . " SET  name = ?";
 
         $stmtTask = $this->connection->prepare($queryTask);
@@ -68,10 +70,11 @@ class Task {
             printf("Error: %s\n", $stmtTask->error);
             return false;
         }
-
+        //Get the id of the last inserted task
         $insertedId = $this->connection->lastInsertId();
 
         foreach ($row->tags as $tag) {
+            //Find the id of the tag, which has to be set to the task
             $queryTag = "SELECT tags.id FROM tags WHERE tags.name = ?";
             $stmtTag = $this->connection->prepare($queryTag);
 
@@ -84,13 +87,16 @@ class Task {
                 return false;
             }
             while ($rowTag = $stmtTag->fetch(PDO::FETCH_ASSOC)) {
+                //Extract the tag array
                 extract($rowTag);
 
+                //Query to insert the task_id and tag_id in the junction table task_tag
                 $queryTaskTag = "INSERT INTO task_tag SET  task_id = ?"
                         . ", tag_id = ?";
 
                 $stmt = $this->connection->prepare($queryTaskTag);
-
+                
+                //Bind data
                 $stmt->bindValue(1, $insertedId);
                 $stmt->bindValue(2, $id);
                 
@@ -107,6 +113,7 @@ class Task {
 
     //Update a task with particular id
     function update($row) {
+        //Update task query for particular id
         $queryTask = "UPDATE " . $this->dbTable . " SET  name = ? "
                 . " WHERE ID = ?";
 
@@ -138,6 +145,7 @@ class Task {
         }
         
         foreach ($row->tags as $tag) {
+            //Finds the id of the tag, which has to be set to the task
             $queryTag = "SELECT tags.id FROM tags WHERE tags.name = ?";
             $stmtTag = $this->connection->prepare($queryTag);
 
@@ -150,8 +158,9 @@ class Task {
                 return false;
             }
             while ($rowTag = $stmtTag->fetch(PDO::FETCH_ASSOC)) {
+                //Ectract the tag array
                 extract($rowTag);
-
+                //Query to insert the task_id and tag_id values in the junction table task_tag
                 $queryTaskTag = "INSERT INTO task_tag SET  task_id = ?"
                         . ", tag_id = ?";
 
@@ -172,7 +181,9 @@ class Task {
 
     //Delete a task with particular id
     function delete($row) {
+        //Delete query
         $query = "DELETE FROM " . $this->dbTable . " WHERE id = ?";
+        
         $stmt = $this->connection->prepare($query);
 
         $this->id = $row->id;

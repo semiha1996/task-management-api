@@ -8,16 +8,19 @@ include_once 'api/models/Task.php';
 include_once 'api/models/Tag.php';
 include_once 'api/config/Database.php';
 
+//Connect to the DB
 $db = new Database();
 $database = $db->connectToDB();
 
 $task = new Task($database);
 $tag = new Tag($database);
 
+//Call the method from Task class to read a task by id
 $task->id = $id;
 $resultTask = $task->read_single();
 
 $numTask = $resultTask->rowCount();
+//Check if there is data in the db and store it in array
 if ($numTask > 0) {
     $taskArr = array();
     $taskArr['tasks'] = array();

@@ -10,11 +10,13 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Methods,Content-Type,
 include_once 'api/models/Tag.php';
 include_once 'api/config/Database.php';
 
+//Connect to the DB
 $db = new Database();
 $database = $db->connectToDB();
 
 $tag = new Tag($database);
 
+//Get the input
 $data = json_decode(file_get_contents("php://input"));
 
     foreach($data as $row){

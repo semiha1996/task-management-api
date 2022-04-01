@@ -14,7 +14,7 @@ class Database {
     
     /**
      * 
-     * 
+     * Function, used to connect to the database
      */
     public function connectToDB() {
        $this-> connection = null; 

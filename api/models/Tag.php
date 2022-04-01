@@ -7,10 +7,11 @@
  */
 class Tag {
 
-    //for connecting the DB
+    //For connecting the DB
     private $connection;
     private $dbTable = 'tags';
-    //properties
+    
+    //Properties
     public int $id;
     public string $name;
     public string $color;
@@ -21,7 +22,7 @@ class Tag {
 
     //Get all tags 
     public function read() {
-        //Create query
+        //Select Query
         $query = "SELECT *  FROM " . $this->dbTable;
 
         $stmt = $this->connection->prepare($query);
@@ -33,7 +34,7 @@ class Tag {
 
     //Get tag by id 
     public function read_single() {
-        //Create query        
+        //Query  to read a single tag by id      
         $query = "SELECT * FROM " . $this->dbTable . " WHERE id = ? LIMIT 0,1";
 
         $stmt = $this->connection->prepare($query);
@@ -50,6 +51,7 @@ class Tag {
 
 //create new tag(s)
     public function create($row) {
+        //Insert query to create new tag/tags
         $query = "INSERT INTO " . $this->dbTable . " SET  name = ?, color = ?";
         $stmt = $this->connection->prepare($query);
 
@@ -69,9 +71,9 @@ class Tag {
         }
     }
 
-    //update  tag(s)
+    //Update  tag(s) with given id(s)
     public function update($row) {
-        //Create query
+        //Update query
         $query = "UPDATE " . $this->dbTable . " SET  name = ?, color = ? "
                 . "WHERE ID=?";
         $stmt = $this->connection->prepare($query);
@@ -94,8 +96,9 @@ class Tag {
         }
     }
 
-    //delete tag(s)
+    //Delete tag(s) by id(s)
     public function delete($row) {
+        //Delete query
         $query = "DELETE FROM " . $this->dbTable . " WHERE id = ?";
         $stmt = $this->connection->prepare($query);
 

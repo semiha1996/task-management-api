@@ -14,9 +14,11 @@ include_once 'api/config/Database.php';
 $db = new Database();
 $database = $db->connectToDB();
 
+//Connect to the DB
 $task = new Task($database);
 $tag = new Tag($database);
 
+//Decode the ipout
 $data = json_decode(file_get_contents("php://input"));
 
 foreach ($data->tasks as $row) {
